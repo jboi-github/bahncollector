@@ -1,0 +1,34 @@
+{
+	"name": "pipeline1",
+	"properties": {
+		"activities": [
+			{
+				"name": "Request Stations",
+				"description": "Request all stations and all id's. Should be done once per day or less.",
+				"type": "WebActivity",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://apis.deutschebahn.com/db-api-marketplace/apis/timetables/v1/station/*",
+					"method": "GET",
+					"headers": {
+						"accept": "application/xml",
+						"DB-Api-Key": "1d3d32773d6208b8a33e8f779952b459",
+						"DB-Client-Id": "4b6bcf3d607f679d588b4b2ab270df3e"
+					}
+				}
+			}
+		],
+		"folder": {
+			"name": "bahncollector"
+		},
+		"annotations": []
+	}
+}
