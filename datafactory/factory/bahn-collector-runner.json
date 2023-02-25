@@ -1,0 +1,9 @@
+{
+	"name": "bahn-collector-runner",
+	"location": "westeurope",
+	"identity": {
+		"type": "SystemAssigned",
+		"principalId": "d199969c-d259-4f23-9049-2818cf4857db",
+		"tenantId": "ebbf4a95-a6ed-4683-80f1-ce6675abc140"
+	}
+}
