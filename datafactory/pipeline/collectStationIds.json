@@ -1,0 +1,94 @@
+{
+	"name": "collectStationIds",
+	"properties": {
+		"activities": [
+			{
+				"name": "Collect StationIds",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "XmlSource",
+						"storeSettings": {
+							"type": "HttpReadSettings",
+							"requestMethod": "GET"
+						},
+						"formatSettings": {
+							"type": "XmlReadSettings",
+							"validationMode": "none",
+							"namespaces": true
+						}
+					},
+					"sink": {
+						"type": "DelimitedTextSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "DelimitedTextWriteSettings",
+							"quoteAllText": true,
+							"fileExtension": ".txt"
+						}
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "['@name']"
+								},
+								"sink": {
+									"name": "bahnhof"
+								}
+							},
+							{
+								"source": {
+									"path": "['@eva']"
+								},
+								"sink": {
+									"name": "eva",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "['@ds100']"
+								},
+								"sink": {
+									"name": "ds100",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": "$['stations']['station']"
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "StationIdsRaw",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "StationIdsCSV",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "bahncollector"
+		},
+		"annotations": []
+	}
+}

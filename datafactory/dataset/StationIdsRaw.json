@@ -1,0 +1,23 @@
+{
+	"name": "StationIdsRaw",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "BahnCollectStationIds",
+			"type": "LinkedServiceReference",
+			"parameters": {
+				"accept": "application/xml"
+			}
+		},
+		"folder": {
+			"name": "bahncollector"
+		},
+		"annotations": [],
+		"type": "Xml",
+		"typeProperties": {
+			"location": {
+				"type": "HttpServerLocation",
+				"relativeUrl": "station/*"
+			}
+		}
+	}
+}

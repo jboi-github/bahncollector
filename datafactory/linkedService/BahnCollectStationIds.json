@@ -1,0 +1,36 @@
+{
+	"name": "BahnCollectStationIds",
+	"properties": {
+		"parameters": {
+			"accept": {
+				"type": "string",
+				"defaultValue": "application/xml"
+			}
+		},
+		"annotations": [],
+		"type": "HttpServer",
+		"typeProperties": {
+			"url": "https://apis.deutschebahn.com/db-api-marketplace/apis/timetables/v1/",
+			"enableServerCertificateValidation": true,
+			"authenticationType": "Anonymous",
+			"authHeaders": {
+				"DB-Api-Key": {
+					"type": "AzureKeyVaultSecret",
+					"store": {
+						"referenceName": "JboiKeyVault",
+						"type": "LinkedServiceReference"
+					},
+					"secretName": "API-Key"
+				},
+				"DB-Client-Id": {
+					"type": "AzureKeyVaultSecret",
+					"store": {
+						"referenceName": "JboiKeyVault",
+						"type": "LinkedServiceReference"
+					},
+					"secretName": "Client-ID"
+				}
+			}
+		}
+	}
+}

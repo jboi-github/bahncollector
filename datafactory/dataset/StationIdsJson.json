@@ -1,0 +1,26 @@
+{
+	"name": "StationIdsJson",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "bahncollectorLandingZone",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "bahncollector"
+		},
+		"annotations": [],
+		"type": "Json",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": "stationIds",
+				"folderPath": {
+					"value": "@formatDateTime(pipeline().TriggerTime, 'd')",
+					"type": "Expression"
+				},
+				"container": "landing-zone"
+			}
+		},
+		"schema": {}
+	}
+}
