@@ -44,16 +44,15 @@
 						"mappings": [
 							{
 								"source": {
-									"path": "$['@name']"
+									"path": "['@name']"
 								},
 								"sink": {
-									"name": "name",
-									"type": "String"
+									"name": "bahnhof"
 								}
 							},
 							{
 								"source": {
-									"path": "$['@eva']"
+									"path": "['@eva']"
 								},
 								"sink": {
 									"name": "eva",
@@ -62,7 +61,7 @@
 							},
 							{
 								"source": {
-									"path": "$['@ds100']"
+									"path": "['@ds100']"
 								},
 								"sink": {
 									"name": "ds100",
