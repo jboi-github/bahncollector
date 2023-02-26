@@ -1,0 +1,333 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "bahn-collector-runner"
+		},
+		"bahncollectorLandingZone_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'bahncollectorLandingZone'"
+		},
+		"JboiKeyVault_properties_typeProperties_baseUrl": {
+			"type": "string",
+			"defaultValue": "https://JboiKeyVault.vault.azure.net/"
+		},
+		"BahnCollectStationIds_properties_typeProperties_url": {
+			"type": "string",
+			"defaultValue": "https://apis.deutschebahn.com/db-api-marketplace/apis/timetables/v1/"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/JboiKeyVault')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureKeyVault",
+				"typeProperties": {
+					"baseUrl": "[parameters('JboiKeyVault_properties_typeProperties_baseUrl')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/bahncollectorLandingZone')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureBlobStorage",
+				"typeProperties": {
+					"connectionString": "[parameters('bahncollectorLandingZone_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/StationIdsCSV')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "bahncollectorLandingZone",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "bahncollector"
+				},
+				"annotations": [],
+				"type": "DelimitedText",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "stationIds.txt",
+						"folderPath": {
+							"value": "@substring(formatDateTime(pipeline().TriggerTime, 'u'), 0, 10)",
+							"type": "Expression"
+						},
+						"container": "landing-zone"
+					},
+					"columnDelimiter": ",",
+					"escapeChar": "\\",
+					"firstRowAsHeader": true,
+					"quoteChar": "\""
+				},
+				"schema": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/bahncollectorLandingZone')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/StationIdsJson')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "bahncollectorLandingZone",
+					"type": "LinkedServiceReference"
+				},
+				"folder": {
+					"name": "bahncollector"
+				},
+				"annotations": [],
+				"type": "Json",
+				"typeProperties": {
+					"location": {
+						"type": "AzureBlobStorageLocation",
+						"fileName": "stationIds",
+						"folderPath": {
+							"value": "@formatDateTime(pipeline().TriggerTime, 'd')",
+							"type": "Expression"
+						},
+						"container": "landing-zone"
+					}
+				},
+				"schema": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/bahncollectorLandingZone')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/BahnCollectStationIds')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"parameters": {
+					"accept": {
+						"type": "string",
+						"defaultValue": "application/xml"
+					}
+				},
+				"annotations": [],
+				"type": "HttpServer",
+				"typeProperties": {
+					"url": "[parameters('BahnCollectStationIds_properties_typeProperties_url')]",
+					"enableServerCertificateValidation": true,
+					"authenticationType": "Anonymous",
+					"authHeaders": {
+						"DB-Api-Key": {
+							"type": "AzureKeyVaultSecret",
+							"store": {
+								"referenceName": "JboiKeyVault",
+								"type": "LinkedServiceReference"
+							},
+							"secretName": "API-Key"
+						},
+						"DB-Client-Id": {
+							"type": "AzureKeyVaultSecret",
+							"store": {
+								"referenceName": "JboiKeyVault",
+								"type": "LinkedServiceReference"
+							},
+							"secretName": "Client-ID"
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/JboiKeyVault')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/StationIdsRaw')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "BahnCollectStationIds",
+					"type": "LinkedServiceReference",
+					"parameters": {
+						"accept": "application/xml"
+					}
+				},
+				"folder": {
+					"name": "bahncollector"
+				},
+				"annotations": [],
+				"type": "Xml",
+				"typeProperties": {
+					"location": {
+						"type": "HttpServerLocation",
+						"relativeUrl": "station/*"
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/BahnCollectStationIds')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/collectStationIds')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Collect StationIds",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.12:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "XmlSource",
+								"storeSettings": {
+									"type": "HttpReadSettings",
+									"requestMethod": "GET"
+								},
+								"formatSettings": {
+									"type": "XmlReadSettings",
+									"validationMode": "none",
+									"namespaces": true
+								}
+							},
+							"sink": {
+								"type": "DelimitedTextSink",
+								"storeSettings": {
+									"type": "AzureBlobStorageWriteSettings"
+								},
+								"formatSettings": {
+									"type": "DelimitedTextWriteSettings",
+									"quoteAllText": true,
+									"fileExtension": ".txt"
+								}
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "[['@name']"
+										},
+										"sink": {
+											"name": "bahnhof"
+										}
+									},
+									{
+										"source": {
+											"path": "[['@eva']"
+										},
+										"sink": {
+											"name": "eva",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "[['@ds100']"
+										},
+										"sink": {
+											"name": "ds100",
+											"type": "String"
+										}
+									}
+								],
+								"collectionReference": "$['stations']['station']"
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "StationIdsRaw",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "StationIdsCSV",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"folder": {
+					"name": "bahncollector"
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/StationIdsRaw')]",
+				"[concat(variables('factoryId'), '/datasets/StationIdsCSV')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/OncePerDay')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Started",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "collectStationIds",
+							"type": "PipelineReference"
+						},
+						"parameters": {}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Day",
+						"interval": 1,
+						"startTime": "2023-02-26T14:36:00Z",
+						"timeZone": "UTC",
+						"schedule": {
+							"minutes": [
+								30
+							],
+							"hours": [
+								0
+							]
+						}
+					}
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/pipelines/collectStationIds')]"
+			]
+		}
+	]
+}

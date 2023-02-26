@@ -1,0 +1,24 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"value": "bahn-collector-runner"
+		},
+		"bahncollectorLandingZone_connectionString": {
+			"value": ""
+		},
+		"BahnCollectStationIds_properties_typeProperties_url": {
+			"value": "https://apis.deutschebahn.com/db-api-marketplace/apis/timetables/v1/"
+		},
+		"JboiKeyVault_properties_typeProperties_baseUrl": {
+			"value": "https://JboiKeyVault.vault.azure.net/"
+		},
+		"containerUri": {
+			"value": ""
+		},
+		"containerSasToken": {
+			"value": ""
+		}
+	}
+}
