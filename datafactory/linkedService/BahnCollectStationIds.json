@@ -1,6 +1,12 @@
 {
 	"name": "BahnCollectStationIds",
 	"properties": {
+		"parameters": {
+			"accept": {
+				"type": "string",
+				"defaultValue": "application/xml"
+			}
+		},
 		"annotations": [],
 		"type": "HttpServer",
 		"typeProperties": {
