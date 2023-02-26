@@ -13,9 +13,9 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "stationIds.txt",
+				"fileName": "stationIds",
 				"folderPath": {
-					"value": "@formatDateTime(pipeline().TriggerTime, 'd')",
+					"value": "@substring(formatDateTime(pipeline().TriggerTime, 'u'), 0, 10)",
 					"type": "Expression"
 				},
 				"container": "landing-zone"
