@@ -13,7 +13,7 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
-				"fileName": "stationIds",
+				"fileName": "stationIds.txt",
 				"folderPath": {
 					"value": "@substring(formatDateTime(pipeline().TriggerTime, 'u'), 0, 10)",
 					"type": "Expression"
