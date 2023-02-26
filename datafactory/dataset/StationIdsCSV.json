@@ -5,11 +5,6 @@
 			"referenceName": "bahncollectorLandingZone",
 			"type": "LinkedServiceReference"
 		},
-		"parameters": {
-			"todayDDMMYY": {
-				"type": "string"
-			}
-		},
 		"folder": {
 			"name": "bahncollector"
 		},
