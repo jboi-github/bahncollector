@@ -1,0 +1,25 @@
+{
+	"name": "StationIdsCSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "bahncollectorLandingZone",
+			"type": "LinkedServiceReference"
+		},
+		"folder": {
+			"name": "bahncollector"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"container": "landing-zone"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
