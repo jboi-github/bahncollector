@@ -51,6 +51,8 @@
 						}
 					},
 					"enableStaging": false,
+					"parallelCopies": 1,
+					"enableSkipIncompatibleRow": true,
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
