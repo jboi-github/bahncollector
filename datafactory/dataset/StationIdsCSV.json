@@ -28,6 +28,19 @@
 			"firstRowAsHeader": true,
 			"quoteChar": "\""
 		},
-		"schema": []
+		"schema": [
+			{
+				"name": "name",
+				"type": "String"
+			},
+			{
+				"name": "eva",
+				"type": "String"
+			},
+			{
+				"name": "ds100",
+				"type": "String"
+			}
+		]
 	}
 }
