@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Get Station Ids",
+				"name": "Collect StationIds",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
@@ -27,11 +27,26 @@
 							"namespaces": true
 						}
 					},
+					"sink": {
+						"type": "JsonSink",
+						"storeSettings": {
+							"type": "AzureBlobStorageWriteSettings"
+						},
+						"formatSettings": {
+							"type": "JsonWriteSettings"
+						}
+					},
 					"enableStaging": false
 				},
 				"inputs": [
 					{
 						"referenceName": "StationIdsRaw",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "StationIdsJson",
 						"type": "DatasetReference"
 					}
 				]
