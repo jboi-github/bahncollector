@@ -10,7 +10,7 @@
 		"annotations": [],
 		"type": "HttpServer",
 		"typeProperties": {
-			"url": "https://apis.deutschebahn.com/db-api-marketplace/apis/timetables/v1/station/*",
+			"url": "https://apis.deutschebahn.com/db-api-marketplace/apis/timetables/v1/",
 			"enableServerCertificateValidation": true,
 			"authenticationType": "Anonymous",
 			"authHeaders": {
