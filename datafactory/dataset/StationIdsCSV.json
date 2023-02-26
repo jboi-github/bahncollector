@@ -13,6 +13,11 @@
 		"typeProperties": {
 			"location": {
 				"type": "AzureBlobStorageLocation",
+				"fileName": "stationIds.txt",
+				"folderPath": {
+					"value": "@formatDateTime(pipeline().TriggerTime, 'd')",
+					"type": "Expression"
+				},
 				"container": "landing-zone"
 			},
 			"columnDelimiter": ",",
