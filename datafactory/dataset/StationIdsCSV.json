@@ -14,7 +14,7 @@
 			"location": {
 				"type": "AzureBlobStorageLocation",
 				"fileName": {
-					"value": "@pipeline().RunId",
+					"value": "@concat('StationIds ', pipeline().RunId) ",
 					"type": "Expression"
 				},
 				"folderPath": {
