@@ -50,7 +50,40 @@
 							"fileExtension": ".txt"
 						}
 					},
-					"enableStaging": false
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['stations']['station'][0]['@name']"
+								},
+								"sink": {
+									"name": "@@name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['stations']['station'][0]['@eva']"
+								},
+								"sink": {
+									"name": "@@eva",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['stations']['station'][0]['@ds100']"
+								},
+								"sink": {
+									"name": "@@ds100",
+									"type": "String"
+								}
+							}
+						],
+						"collectionReference": ""
+					}
 				},
 				"inputs": [
 					{
