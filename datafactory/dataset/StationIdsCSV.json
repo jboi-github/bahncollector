@@ -1,0 +1,38 @@
+{
+	"name": "StationIdsCSV",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "bahncollectorLandingZone",
+			"type": "LinkedServiceReference"
+		},
+		"parameters": {
+			"todayDDMMYY": {
+				"type": "string"
+			}
+		},
+		"folder": {
+			"name": "bahncollector"
+		},
+		"annotations": [],
+		"type": "DelimitedText",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobStorageLocation",
+				"fileName": {
+					"value": "@pipeline().RunId",
+					"type": "Expression"
+				},
+				"folderPath": {
+					"value": "@substring(pipeline().TriggerTime, 0, 20)",
+					"type": "Expression"
+				},
+				"container": "landing-zone"
+			},
+			"columnDelimiter": ",",
+			"escapeChar": "\\",
+			"firstRowAsHeader": true,
+			"quoteChar": "\""
+		},
+		"schema": []
+	}
+}
